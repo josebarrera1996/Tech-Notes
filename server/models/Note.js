@@ -35,7 +35,7 @@ const noteSchema = new mongoose.Schema(
     }
 );
 
-// Implementando el campo 'ticket' que se autoincrementable de manera secuencial
+// Implementando el campo 'ticket' que sea autoincrementable de manera secuencial
 // A su vez creará una nueva colección de ayuda llamada 'Counter'
 noteSchema.plugin(AutoIncrement, {
 
