@@ -1,34 +1,36 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import { Routes, Route } from "react-router-dom";
+import Layout from "./components/Layout";
+import Public from "./features/auth/Public";
+import Login from "./components/Login";
+import DashLayout from "./components/DashLayout";
+import Welcome from "./features/auth/Welcome";
+import NotesList from "./features/notes/NotesList";
+import UsersList from "./features/users/UsersList";
 
+// Componente funcional
+// En este se definirán las rutas
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
+    <Routes>
+      {/* Definiendo la ruta con el elemento que se renderizará en la gran mayoría de los componentes */}
+      <Route path="/" element={<Layout />}>
+        {/* Definiendo las rutas secundarias (y públicas) */}
+        <Route index element={<Public />} /> {/* Este será el componente por defecto que se mostrará al acceder a la app */}
+        <Route path="login" element={<Login />} />
+        {/* Definiendo rutas protegidas (no son de acceso público y solo aparecerán una vez logeados) */}
+        <Route path="dash" element={<DashLayout />}>
+          <Route index element={<Welcome />} /> {/* Este será el componente por defecto que se mostrará al acceder a esta ruta*/}
+          <Route path="notes"> {/* /dash/notes */}
+            <Route index element={<NotesList />} /> {/* Este será el componente por defecto que se mostrará al acceder a esta ruta*/}
+          </Route>
+          <Route path="users"> {/* /dash/users */}
+            <Route index element={<UsersList />} /> {/* Este será el componente por defecto que se mostrará al acceder a esta ruta*/}
+          </Route>
+        </Route>
+      </Route>
+    </Routes>
   )
 }
 
-export default App
+export default App;
