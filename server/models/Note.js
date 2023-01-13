@@ -16,12 +16,12 @@ const noteSchema = new mongoose.Schema(
 
         title: {
             type: String,
-            require: true
+            required: true
         },
 
         text: {
             type: String,
-            require: true
+            required: true
         },
 
         completed: {
