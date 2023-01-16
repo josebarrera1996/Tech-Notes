@@ -68,15 +68,15 @@ const createNewNote = asyncHandler(async (req, res) => {
 const updateNote = asyncHandler(async (req, res) => {
 
     // Obteniendo los valores de los campos del body del request
-    const { _id, user, title, text, completed } = req.body;
+    const { id, user, title, text, completed } = req.body;
 
     // Chequear que todos hayan sido rellenados
-    if (!_id || !user || !title || !text || typeof completed !== 'boolean') {
+    if (!id || !user || !title || !text || typeof completed !== 'boolean') {
         return res.status(400).json({ message: 'All fields are required' });
     }
 
     // Chequear que la 'note' exista en la B.D
-    const note = await Note.findById(_id).exec();
+    const note = await Note.findById(id).exec();
 
     if (!note) {
         return res.status(400).json({ message: 'Note not found' });
@@ -86,7 +86,7 @@ const updateNote = asyncHandler(async (req, res) => {
     const duplicate = await Note.findOne({ title }).lean().exec();
 
     // Permitir actualizaciones a la 'note' original 
-    if (duplicate && duplicate?._id.toString() !== _id) {
+    if (duplicate && duplicate?._id.toString() !== id) {
         return res.status(409).json({ message: 'Duplicate note title' });
     }
 

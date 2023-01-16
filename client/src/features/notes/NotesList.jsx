@@ -2,7 +2,7 @@ import { useGetNotesQuery } from "./notesApiSlice";
 import Note from "./Note";
 
 // Componente funcional
-// Representará la sección en donde estará un listado con las notas
+// Representará la sección en donde estará un listado con las 'Notes'
 const NotesList = () => {
 
   // Utilizando 'useGetNotesQuery'
@@ -12,7 +12,12 @@ const NotesList = () => {
     isSuccess,
     isError,
     error
-  } = useGetNotesQuery();
+  } = useGetNotesQuery(null, {
+    // Configuraciones opcionales
+    pollingInterval: 15000, // Frecuencia con la que se recargarán los datos (15 segundos)
+    refetchOnFocus: true, // Si estamos en otra 'ventana' y regresamos, se recargarán los datos
+    refetchOnMountOrArgChange: true // Si cargamos nuevamente el componente, lo mismo pasará con los datos
+  });
 
   // Renderización en base a ciertas condiciones
   let content;

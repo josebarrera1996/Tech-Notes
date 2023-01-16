@@ -13,7 +13,12 @@ const UsersList = () => {
     isSuccess,
     isError,
     error
-  } = useGetUsersQuery();
+  } = useGetUsersQuery(null, {
+    // Configuraciones adicionales
+    pollingInterval: 60000, // Frecuencia con la que se recargarán los datos (60 segundos / 1 minuto)
+    refetchOnFocus: true, // Si estamos en otra 'ventana' y regresamos, se recargarán los datos
+    refetchOnMountOrArgChange: true // Si cargamos nuevamente el componente, lo mismo pasará con los datos
+  });
 
   // Renderización en base a ciertas condiciones
   let content;

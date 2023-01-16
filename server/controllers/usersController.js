@@ -66,15 +66,15 @@ const createUser = asyncHandler(async (req, res) => {
 const updateUser = asyncHandler(async (req, res) => {
 
     // Obtener los siguientes valores de los respectivos campos del body del request
-    const { _id, username, roles, active, password } = req.body; 
+    const { id, username, roles, active, password } = req.body; 
 
     // Chequear que todos los campos, a excepción de la password (opcional), están llenos
-    if (!_id || !username || !Array.isArray(roles) || !roles.length || typeof active !== 'boolean') {
+    if (!id || !username || !Array.isArray(roles) || !roles.length || typeof active !== 'boolean') {
         return res.status(400).json({ message: 'All fields except password are required' });
     }
 
     // Chequear si el usuario existe al consultarlo en la B.D y traer sus datos
-    const user = await User.findById(_id).exec();
+    const user = await User.findById(id).exec();
 
     if (!user) {
         return res.status(400).json({ message: 'User not found' });
@@ -84,7 +84,7 @@ const updateUser = asyncHandler(async (req, res) => {
     const duplicate = await User.findOne({ username }).lean().exec();
 
     // Permitir actualizaciones a el 'user' original
-    if (duplicate && duplicate?._id.toString() !== _id) {
+    if (duplicate && duplicate?._id.toString() !== id) {
         return res.status(409).json({ message: 'Duplicate username' });
     }
 

@@ -3,7 +3,7 @@ import { apiSlice } from '../../app/api/apiSlice';
 
 // Con esto podremos generar un conjunto de 'reducers' y 'selectors' pre-construidos para realizar operaciones CRUD
 // en una 'estructura de estado normalizada' que contiene instancias de un tipo particular de objetos de datos
-const usersAdapter = createEntityAdapter({}); 
+const usersAdapter = createEntityAdapter({});
 
 // Obteniendo y definiendo el estado inicial
 const initialState = usersAdapter.getInitialState();
@@ -19,7 +19,6 @@ export const usersApiSlice = apiSlice.injectEndpoints({
             validateStatus: (response, result) => {
                 return response.status === 200 && !result.isError
             },
-            keepUnusedDataFor: 5,
             transformResponse: responseData => {
                 const loadedUsers = responseData.map(user => {
                     // Como trabajamos con MongoDB, la propiedad es '_id'
@@ -39,12 +38,56 @@ export const usersApiSlice = apiSlice.injectEndpoints({
                 } else return [{ type: 'User', id: 'LIST' }] // En caso de que haya habido una falla...
             }
         }),
+        // Para añadir un nuevo usuario...
+        addNewUser: builder.mutation({
+            query: initialUserData => ({
+                url: '/users',
+                method: 'POST',
+                body: {
+                    ...initialUserData,
+                }
+            }),
+            invalidatesTags: [
+                // Forzando a el 'cache' a actualizarlo para que se invalide la 'LIST' del 'User'
+                { type: 'User', id: "LIST" }
+            ]
+        }),
+        // Para actualizar a un usuario existente...
+        updateUser: builder.mutation({
+            query: initialUserData => ({
+                url: '/users',
+                method: 'PATCH',
+                body: {
+                    ...initialUserData,
+                }
+            }),
+            invalidatesTags: (result, error, arg) => [
+                // Forzando a el 'cache' a actualizarlo para que se invalide el 'id' del 'User' que se le pase
+                { type: 'User', id: arg.id }
+            ]
+        }),
+        // Para eliminar a un usuario existente...
+        deleteUser: builder.mutation({
+            query: ({ id }) => ({
+                url: `/users`,
+                method: 'DELETE',
+                body: { id }
+            }),
+            invalidatesTags: (result, error, arg) => [
+                // Forzando a el 'cache' a actualizarlo para que se invalide el 'id' del 'User' que se le pase
+                { type: 'User', id: arg.id }
+            ]
+        })
     }),
 });
 
-// Exportando el Hook personalizado recien creado
+// Exportando los hooks personalizados
 export const {
-    useGetUsersQuery // Referencia a 'getUsers'
+    useGetUsersQuery, // Referencia a 'getUsers'
+    // Mutaciones
+    useAddNewUserMutation, // Referencia a 'addNewUser'
+    useUpdateUserMutation, // Referencia a 'updateUser'
+    useDeleteUserMutation // Referencia a 'deleteUser'
 } = usersApiSlice;
 
 // Retorna el objeto de resultado de la consulta (query)

@@ -9,20 +9,20 @@ import { selectNoteById } from './notesApiSlice';
 const Note = ({ noteId }) => { // Propiedad destructurada 'noteId'
 
     // Utilizando 'useSelector' para acceder con 'selectNoteById'
-    // Para obtener los datos de la nota
+    // Para obtener los datos de la 'Note'
     const note = useSelector(state => selectNoteById(state, noteId));
 
     // Utilizando 'useNavigate' para manejar la navegación
     const navigate = useNavigate();
 
-    // Si la nota existe...
+    // Si la 'Note' existe...
     if (note) {
 
         // Convertir el campo 'createdAt' con el siguiente formato
         const created = new Date(note._doc.createdAt).toLocaleString('en-US', { day: 'numeric', month: 'long' });
         // Convertir el campo 'updatedAt' con el siguiente formato
         const updated = new Date(note._doc.updatedAt).toLocaleString('en-US', { day: 'numeric', month: 'long' });
-        // Dirección para poder editar a la nota
+        // Dirección para poder editar a la 'Note'
         const handleEdit = () => navigate(`/dash/notes/${noteId}`);
 
         return (

@@ -9,19 +9,19 @@ import { selectUserById } from './usersApiSlice';
 const User = ({ userId }) => { // Propiedad destructurada 'userId'
 
     // Utilizando 'useSelector' para acceder con 'selectUserById'
-    // Para obtener los datos del usuario
+    // Para obtener los datos del 'User'
     const user = useSelector(state => selectUserById(state, userId));
 
     // Utilizando 'useNavigate' para manejar la navegación
     const navigate = useNavigate();
 
-    if (user) { // Si el usuario existe...
+    if (user) { // Si el 'User' existe...
 
-        // Dirección para poder editar a el usuario
+        // Dirección para poder editar a el 'User'
         const handleEdit = () => navigate(`/dash/users/${userId}`);
-        // Concatenar los roles del usuario
+        // Concatenar los roles del 'User'
         const userRolesString = user.roles.toString().replaceAll(',', ', ')
-        // Clase a aplicar si el usuario está o no activo
+        // Clase a aplicar si el 'User' está o no activo
         const cellStatus = user.active ? '' : 'table__cell--inactive';
 
         return (

@@ -1,5 +1,6 @@
 import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 import { apiSlice } from "./api/apiSlice";
+import { setupListeners } from "@reduxjs/toolkit/dist/query";
 
 // Creando el 'store'
 export const store = configureStore({
@@ -13,3 +14,7 @@ export const store = configureStore({
         getDefaultMiddleware => getDefaultMiddleware().concat(apiSlice.middleware),
     devTools: true
 });
+
+// Configurando los 'listeners'
+// Estos serán de utilidad cuando hay más de un usuario consultando la API a la vez y ver los cambios en los respectivos datos
+setupListeners(store.dispatch);
