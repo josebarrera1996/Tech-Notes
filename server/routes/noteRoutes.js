@@ -3,9 +3,13 @@
 
 const express = require('express');
 const router = express.Router(); // Definiendo el enrutador
+const verifyJWT = require('../middleware/verifyJWT');
 const notesController = require('../controllers/notesController');
 
 /* Definiendo las rutas */
+
+// Aplicando el siguiente 'middleware' a todas las rutas
+router.use(verifyJWT);
 
 router.route('/')
     .get(notesController.getAllNotes)

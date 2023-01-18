@@ -35,6 +35,7 @@ app.use('/', express.static(path.join(__dirname, 'public'))); // Indicando a Exp
 /* Implementando las rutas */
 
 app.use('/', require('./routes/root')); // Implementar la ruta raíz
+app.use('/auth', require('./routes/authRoutes')); // Implementar la ruta para las 'auth'
 app.use('/users', require('./routes/userRoutes')); // Implementar la ruta para los 'users'
 app.use('/notes', require('./routes/noteRoutes')); // Implementar la ruta para las 'notes'
 
