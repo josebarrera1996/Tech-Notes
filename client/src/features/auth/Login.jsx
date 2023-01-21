@@ -1,8 +1,9 @@
 import { useRef, useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { setCredentials } from '../features/auth/authSlice';
-import { useLoginMutation } from '../features/auth/authApiSlice';
+import { setCredentials } from './authSlice';
+import { useLoginMutation } from './authApiSlice';
+import usePersist from '../../hooks/usePersist';
 
 // Componente funcional
 // Representará la sección para que el usuario pueda logearse
@@ -19,6 +20,9 @@ const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errMsg, setErrMsg] = useState('');
+
+  // Utilizando el Hook personalizado 'usePersist'
+  const [persist, setPersist] = usePersist();
 
   // Utilizando 'useDispatch' para invovocar acciones
   const dispatch = useDispatch();
@@ -65,6 +69,9 @@ const Login = () => {
   const handleUserInput = (e) => setUsername(e.target.value);
   const handlePwdInput = (e) => setPassword(e.target.value);
 
+  // Para manejar la persistencia...
+  const handleToggle = () => setPersist(prev => !prev);
+
   // Clase dinámica dependiendo si hubo o no error
   const errClass = errMsg ? "errmsg" : "offscreen";
 
@@ -78,7 +85,6 @@ const Login = () => {
       </header>
       <main className="login">
         <p ref={errRef} className={errClass} aria-live="assertive">{errMsg}</p>
-
         <form className="form" onSubmit={handleSubmit}>
           <label htmlFor="username">Username:</label>
           <input
@@ -91,7 +97,6 @@ const Login = () => {
             autoComplete="off"
             required
           />
-
           <label htmlFor="password">Password:</label>
           <input
             className="form__input"
@@ -102,6 +107,16 @@ const Login = () => {
             required
           />
           <button className="form__submit-button">Sign In</button>
+          <label htmlFor="persist" className="form__persist">
+            <input
+              type="checkbox"
+              className="form__checkbox"
+              id="persist"
+              onChange={handleToggle}
+              checked={persist}
+            />
+            Trust This Device
+          </label>
         </form>
       </main>
       <footer>

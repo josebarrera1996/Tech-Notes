@@ -13,7 +13,7 @@ const UsersList = () => {
     isSuccess,
     isError,
     error
-  } = useGetUsersQuery(null, {
+  } = useGetUsersQuery('usersList', {
     // Configuraciones adicionales
     pollingInterval: 60000, // Frecuencia con la que se recargarán los datos (60 segundos / 1 minuto)
     refetchOnFocus: true, // Si estamos en otra 'ventana' y regresamos, se recargarán los datos

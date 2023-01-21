@@ -12,7 +12,7 @@ const NotesList = () => {
     isSuccess,
     isError,
     error
-  } = useGetNotesQuery(null, {
+  } = useGetNotesQuery('notesList', {
     // Configuraciones opcionales
     pollingInterval: 15000, // Frecuencia con la que se recargarán los datos (15 segundos)
     refetchOnFocus: true, // Si estamos en otra 'ventana' y regresamos, se recargarán los datos

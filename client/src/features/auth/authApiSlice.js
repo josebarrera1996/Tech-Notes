@@ -1,5 +1,5 @@
 import { apiSlice } from "../../app/api/apiSlice";
-import { logOut } from "./authSlice";
+import { logOut, setCredentials } from "./authSlice";
 
 // Creando este slice para poder definir 'endpoints' e interactuar con la lógica del servidor
 export const authApiSlice = apiSlice.injectEndpoints({
@@ -19,14 +19,17 @@ export const authApiSlice = apiSlice.injectEndpoints({
                 url: '/auth/logout',
                 method: 'POST',
             }),
-            // Implementando este método dentro de este 'endppint'
+            // Implementando este método dentro de este 'endpoint'
             async onQueryStarted(arg, { dispatch, queryFulfilled }) {
                 try {
-                    //const { data } = await queryFulfilled; // Obtenemos el mensaje de éxito del servidor
-                    await queryFulfilled; // Una vez que la 'query' ha sido completada...
-                    //console.log(data); //  Nos mostraría el mensaje (de éxito) definido en el servidor
-                    dispatch(logOut()); // Reazliar el dispatch a el 'reducer' de 'logOut'
-                    dispatch(apiSlice.util.resetApiState()); // Restear el 'state' del 'apiSlice' y con ello el 'cache' y las 'subscriptions'
+                    // Esperando que la query haya sido completada...
+                    const { data } = await queryFulfilled;
+                    console.log(data);
+                    // Realizar el deslogeo
+                    dispatch(logOut());
+                    setTimeout(() => {
+                        dispatch(apiSlice.util.resetApiState()); // Limpiar el estado de la api
+                    }, 1000);
                 } catch (err) {
                     console.log(err);
                 }
@@ -37,7 +40,21 @@ export const authApiSlice = apiSlice.injectEndpoints({
             query: () => ({
                 url: '/auth/refresh',
                 method: 'GET',
-            })
+            }),
+            // Implementando este método dentro de este 'endpoint'
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    // Esperando que la query haya sido completada...
+                    const { data } = await queryFulfilled;
+                    console.log(data);
+                    // Accediendo al token de acceso
+                    const { accessToken } = data;
+                    // Estableciendo las credenciales con el token de acceso
+                    dispatch(setCredentials({ accessToken }));
+                } catch (err) {
+                    console.log(err)
+                }
+            }
         }),
     })
 });
