@@ -3,10 +3,14 @@ import { useUpdateNoteMutation, useDeleteNoteMutation } from "./notesApiSlice";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import useAuth from '../../hooks/useAuth';
 
 // Componente funcional
 // Formulario para editar a una 'Note'
 const EditNoteForm = ({ note, users }) => { // Destructurando las props
+
+    // Utilizando 'useAuth' para manejar las propiedades del token decodificado
+    const { isManager, isAdmin } = useAuth();
 
     // Utilizando 'useNavigate' para manejar la navegación
     const navigate = useNavigate();
@@ -91,6 +95,20 @@ const EditNoteForm = ({ note, users }) => { // Destructurando las props
     // Contenedor de errores
     const errContent = (error?.data?.message || delerror?.data?.message) ?? '';
 
+    // Botón para eliminar las 'Notes'. Siempre y cuando el 'User' sea 'Manager' o 'Admin'
+    let deleteButton = null;
+    if (isManager || isAdmin) {
+        deleteButton = (
+            <button
+                className="icon-button"
+                title="Delete"
+                onClick={onDeleteNoteClicked}
+            >
+                <FontAwesomeIcon icon={faTrashCan} />
+            </button>
+        );
+    }
+
     return (
         <>
             <p className={errClass}>{errContent}</p>
@@ -107,13 +125,7 @@ const EditNoteForm = ({ note, users }) => { // Destructurando las props
                         >
                             <FontAwesomeIcon icon={faSave} />
                         </button>
-                        <button
-                            className="icon-button"
-                            title="Delete"
-                            onClick={onDeleteNoteClicked}
-                        >
-                            <FontAwesomeIcon icon={faTrashCan} />
-                        </button>
+                        {deleteButton}
                     </div>
                 </div>
                 <label className="form__label" htmlFor="note-title">

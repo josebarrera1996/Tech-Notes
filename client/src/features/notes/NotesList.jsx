@@ -1,9 +1,13 @@
 import { useGetNotesQuery } from "./notesApiSlice";
 import Note from "./Note";
+import useAuth from '../../hooks/useAuth';
 
 // Componente funcional
 // Representará la sección en donde estará un listado con las 'Notes'
 const NotesList = () => {
+
+  // Utilizando 'useAuth' para manejar las propiedades (decodificadas del token)
+  const { username, isManager, isAdmin } = useAuth();
 
   // Utilizando 'useGetNotesQuery'
   const {
@@ -31,13 +35,20 @@ const NotesList = () => {
   if (isSuccess) { // Si hubo éxito al traer los datos...
 
     // Destructurar 'notes' para obtener los ids y las entidades
-    const { ids } = notes;
+    const { ids, entities } = notes;
+    // Realizar un filtrado...
+    let filteredIds;
+    if (isManager || isAdmin) {
+      // Si el 'User' cumple con alguno de estos roles, puede ver TODAS las 'Notes'
+      filteredIds = [...ids];
+    } else {
+      // Si no lo cumple ('Employee'), solo podrá ver las 'Notes' que haya realizado él
+      filteredIds = ids.filter(noteId => entities[noteId].username === username);
+    }
 
     // Crear el 'cuerpo' de una tabla con la info de cada 'note'
     // Renderizar el componente 'Note'
-    const tableContent = ids?.length
-      ? ids.map(noteId => <Note key={noteId} noteId={noteId} />)
-      : null;
+    const tableContent = ids?.length && filteredIds.map(noteId => <Note key={noteId} noteId={noteId} />)
 
     content = (
       <table className="table table--notes">

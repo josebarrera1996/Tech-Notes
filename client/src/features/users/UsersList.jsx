@@ -36,9 +36,7 @@ const UsersList = () => {
 
     // Crear el 'cuerpo' de una tabla con la info de cada 'user'
     // Renderizar el componente 'User'
-    const tableContent = ids?.length
-      ? ids.map(userId => <User key={userId} userId={userId} />)
-      : null;
+    const tableContent = ids?.length && ids.map(userId => <User key={userId} userId={userId} />);
 
     content = (
       <table className="table table--users">

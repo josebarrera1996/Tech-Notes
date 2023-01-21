@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 // Componente funcional
-// Servirá un componente de 'almacenamiento'
+// Servirá como un Hook personalizado para lo que es el 'almacenamiento'
 const usePersist = () => {
     const [persist, setPersist] = useState(JSON.parse(localStorage.getItem("persist")) || false);
 
