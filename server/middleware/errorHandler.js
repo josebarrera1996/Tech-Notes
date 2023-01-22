@@ -20,7 +20,7 @@ const errorHandler = (err, req, res, next) => {
     res.status(status);
 
     // Enviar en formato JSON el error con su respectivo mensaje
-    res.json({ message: err.message });
+    res.json({ message: err.message, isError: true });
 };
 
 // Exportando el middleware

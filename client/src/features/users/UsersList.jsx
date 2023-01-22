@@ -1,9 +1,14 @@
 import { useGetUsersQuery } from "./usersApiSlice";
 import User from "./User";
+import useTitle from "../../hooks/useTitle";
+import PulseLoader from 'react-spinners/PulseLoader';
 
 // Componente funcional
 // Representará la sección donde estará el listado con los usuarios
 const UsersList = () => {
+
+  // Utilizando 'useTitle' para cambiar el título de la pestaña
+  useTitle('techNotes: Users List');
 
   // Utilizando 'useGetUsersQuery'
   const {
@@ -23,7 +28,7 @@ const UsersList = () => {
   // Renderización en base a ciertas condiciones
   let content;
 
-  if (isLoading) content = <p>Loading...</p> // Si se está a la espera de los datos...
+  if (isLoading) content = <PulseLoader color={"#FFF"} /> // Si se está a la espera de los datos...
 
   if (isError) { // Si hay un error...
     content = <p className="errmsg">{error?.data?.message}</p>

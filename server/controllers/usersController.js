@@ -33,12 +33,12 @@ const createUser = asyncHandler(async (req, res) => {
     const { username, password, roles } = req.body;
 
     // Chequear si hemos llenado todos los campos
-    if (!username || !password || !Array.isArray(roles) || !roles.length) {
+    if (!username || !password) { // No necesario -> !Array.isArray(roles) || !roles.length, ya que hay un valor por 'defecto'
         return res.status(400).json({ message: 'All fields are required' });
     }
 
     // Chequear si ya hay un 'username' con el mismo valor en la B.D
-    const duplicate = await User.findOne({ username }).lean().exec();
+    const duplicate = await User.findOne({ username }).collation({ locale: 'en', strength: 2 }).lean().exec(); // Se chequeará lo que es el 'Case sensitive'
 
     if (duplicate) {
         return res.status(409).json({ message: 'Duplicate username' });
@@ -48,7 +48,9 @@ const createUser = asyncHandler(async (req, res) => {
     const hashedPwd = await bcrypt.hash(password, 10); // salt rounds
 
     // Crear el objeto a insertar con los datos llenados (con la password transformada)
-    const userObject = { username, "password": hashedPwd, roles };
+    const userObject = (!Array.isArray(roles) || !roles.length) // Si no colocamos ningún valor en el campo 'roles'
+        ? { username, "password": hashedPwd } // Almacenar lo ingresado en los campos 'username' y 'password'
+        : { username, "password": hashedPwd, roles }; // Almacenar lo ingresado en los campos 'username', 'password' y 'roles'
 
     // Crear y almacenar el 'user' en la B.D
     const user = await User.create(userObject);
@@ -66,7 +68,7 @@ const createUser = asyncHandler(async (req, res) => {
 const updateUser = asyncHandler(async (req, res) => {
 
     // Obtener los siguientes valores de los respectivos campos del body del request
-    const { id, username, roles, active, password } = req.body; 
+    const { id, username, roles, active, password } = req.body;
 
     // Chequear que todos los campos, a excepción de la password (opcional), están llenos
     if (!id || !username || !Array.isArray(roles) || !roles.length || typeof active !== 'boolean') {
@@ -81,7 +83,7 @@ const updateUser = asyncHandler(async (req, res) => {
     }
 
     // Chequear si en la B.D ya hay con el 'username' que se quiere ingresar
-    const duplicate = await User.findOne({ username }).lean().exec();
+    const duplicate = await User.findOne({ username }).collation({ locale: 'en', strength: 2 }).lean().exec(); // Se chequeará lo que es el 'Case sensitive'
 
     // Permitir actualizaciones a el 'user' original
     if (duplicate && duplicate?._id.toString() !== id) {

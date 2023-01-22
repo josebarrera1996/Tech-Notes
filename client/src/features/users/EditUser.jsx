@@ -1,20 +1,31 @@
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { selectUserById } from './usersApiSlice';
+import { useGetUsersQuery } from './usersApiSlice';
+import PulseLoader from 'react-spinners/PulseLoader';
 import EditUserForm from './EditUserForm';
+import useTitle from '../../hooks/useTitle';
 
 // Componente funcional
 // Servirá de 'contenedor' del formulario para editar al 'User'
 const EditUser = () => {
 
+  // Utilizando 'useTitle' para asignar el respectito título
+  useTitle('techNotes: Edit User');
+
   // Utilizando 'useParams' 
   const { id } = useParams(); // Obteniendo el 'id' de los parámetros de la URL
 
-  // Utilizando 'useSelector' con el Hook 'selectUserById' para obtener el estado del respectivo 'User' (gracias a el ID)
-  const user = useSelector(state => selectUserById(state, id));
+  // Utilizando 'useGetUsersQuery' para llenar este componente con los datos de la 'Note' que coincida
+  const { user } = useGetUsersQuery("usersList", {
+    selectFromResult: ({ data }) => ({
+      user: data?.entities[id]
+    })
+  });
 
-  // Constante cuyo contenido dependerá de si el 'User' ha sido cargado o se está en el proceso..
-  const content = user ? <EditUserForm user={user} /> : <p>Loading...</p>
+  // Si no hay 'User' mostrar el siguiente componente
+  if (!user) return <PulseLoader color={"#FFF"} />
+
+  // Si hay 'User'...
+  const content = <EditUserForm user={user} />
 
   return content;
 }

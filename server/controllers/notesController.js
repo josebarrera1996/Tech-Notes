@@ -47,8 +47,8 @@ const createNewNote = asyncHandler(async (req, res) => {
     }
 
     // Chequear si hay una 'note' con el título duplicado
-    const duplicate = await Note.findOne({ title }).lean().exec();
-
+    const duplicate = await Note.findOne({ title }).collation({ locale: 'en', strength: 2 }).lean().exec(); // Se chequeará lo que es el 'Case sensitive'
+    
     if (duplicate) {
         return res.status(409).json({ message: 'Duplicate note title' });
     }
@@ -83,7 +83,7 @@ const updateNote = asyncHandler(async (req, res) => {
     }
 
     // Chequear si en la B.D ya hay una 'note' con el mismo 'title'
-    const duplicate = await Note.findOne({ title }).lean().exec();
+    const duplicate = await Note.findOne({ title }).collation({ locale: 'en', strength: 2 }).lean().exec(); // Se chequeará lo que es el 'Case sensitive'
 
     // Permitir actualizaciones a la 'note' original 
     if (duplicate && duplicate?._id.toString() !== id) {

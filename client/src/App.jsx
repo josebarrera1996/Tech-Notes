@@ -14,10 +14,14 @@ import Prefetch from "./features/auth/Prefetch";
 import PersistLogin from "./features/auth/PersistLogin";
 import RequireAuth from './features/auth/RequireAuth';
 import { ROLES } from './config/roles';
+import useTitle from './hooks/useTitle';
 
 // Componente funcional
 // En este se definirán las rutas
 function App() {
+
+  // Utilizando 'useTitle' para cambiar el título de la pestaña
+  useTitle('Dan D. Repairs');
 
   return (
     <Routes>

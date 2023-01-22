@@ -19,10 +19,12 @@ export const notesApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         // Para traer los usuarios...
         getNotes: builder.query({
-            query: () => '/notes',
-            validateStatus: (response, result) => {
-                return response.status === 200 && !result.isError
-            },
+            query: () => ({
+                url: '/notes',
+                validateStatus: (response, result) => {
+                    return response.status === 200 && !result.isError; // Trabajando con la propiedad 'isError' definida en el servidor
+                },
+            }),
             transformResponse: responseData => {
                 const loadedNotes = responseData.map(note => {
                     // Como trabajamos con MongoDB, la propiedad es '_id'

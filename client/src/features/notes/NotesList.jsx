@@ -1,10 +1,15 @@
 import { useGetNotesQuery } from "./notesApiSlice";
 import Note from "./Note";
 import useAuth from '../../hooks/useAuth';
+import useTitle from '../../hooks/useTitle';
+import PulseLoader from 'react-spinners/PulseLoader';
 
 // Componente funcional
 // Representará la sección en donde estará un listado con las 'Notes'
 const NotesList = () => {
+
+  // Utilizando 'useTitle' para cambiar el título de la pestaña
+  useTitle('techNotes: Notes List');
 
   // Utilizando 'useAuth' para manejar las propiedades (decodificadas del token)
   const { username, isManager, isAdmin } = useAuth();
@@ -26,7 +31,7 @@ const NotesList = () => {
   // Renderización en base a ciertas condiciones
   let content;
 
-  if (isLoading) content = <p>Loading...</p>; // Si se están cargando los datos...
+  if (isLoading) content = <PulseLoader color={"#FFF"} />; // Si se están cargando los datos...
 
   if (isError) { // Si hay algún error...
     content = <p className="errmsg">{error?.data?.message}</p>;

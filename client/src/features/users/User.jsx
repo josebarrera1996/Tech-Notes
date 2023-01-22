@@ -1,16 +1,19 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux';
-import { selectUserById } from './usersApiSlice';
+import { useNavigate } from 'react-router-dom';
+import { useGetUsersQuery } from './usersApiSlice';
+import { memo } from 'react';
 
 // Componente funcional
 // Representará la estructura de un 'User'
 const User = ({ userId }) => { // Propiedad destructurada 'userId'
 
-    // Utilizando 'useSelector' para acceder con 'selectUserById'
-    // Para obtener los datos del 'User'
-    const user = useSelector(state => selectUserById(state, userId));
+    // Utilizando 'useGetUsersQuery' para llenar este componente con los datos de la 'Note' que coincida
+    const { user } = useGetUsersQuery("usersList", {
+        selectFromResult: ({ data }) => ({ // Coincidencia con lo fijado en el componente 'UsersList'
+            user: data?.entities[userId]
+        })
+    });
 
     // Utilizando 'useNavigate' para manejar la navegación
     const navigate = useNavigate();
@@ -39,7 +42,9 @@ const User = ({ userId }) => { // Propiedad destructurada 'userId'
             </tr>
         )
     } else return null;
-
 }
 
-export default User;
+// Con esto el componente se 'renderizará' si hay cambios en él
+const memoizedUser = memo(User);
+
+export default memoizedUser;

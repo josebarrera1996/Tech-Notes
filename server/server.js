@@ -2,10 +2,12 @@
 
 // Dependencias, librerías, etc
 require('dotenv').config(); // Para poder utilizar las variables de entorno definidas en este proyecto
+// require('express-async-errors'); // Opcional -> Implementar un manejo de errores para todo el servidor (evitar la declaración de bloques try/catch)
 const express = require('express');
 
 // Definiendo la app al instanciar a Express
 const app = express();
+
 
 // Importando a 'path'
 const path = require('path');

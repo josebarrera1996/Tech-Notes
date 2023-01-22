@@ -1,16 +1,19 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { selectNoteById } from './notesApiSlice';
+import { useGetNotesQuery } from './notesApiSlice';
+import { memo } from 'react';
 
 // Componente funcional
 // Representará la estructura de una 'Note'
 const Note = ({ noteId }) => { // Propiedad destructurada 'noteId'
 
-    // Utilizando 'useSelector' para acceder con 'selectNoteById'
-    // Para obtener los datos de la 'Note'
-    const note = useSelector(state => selectNoteById(state, noteId));
+    // Utilizando 'useGetNotesQuery' para llenar este componente con los datos de la 'Note' que coincida
+    const { note } = useGetNotesQuery("notesList", { // Coincidencia con lo fijado en el componente 'NoteList'
+        selectFromResult: ({ data }) => ({
+            note: data?.entities[noteId]
+        })
+    });
 
     // Utilizando 'useNavigate' para manejar la navegación
     const navigate = useNavigate();
@@ -52,4 +55,7 @@ const Note = ({ noteId }) => { // Propiedad destructurada 'noteId'
     } else return null;
 };
 
-export default Note;
+// Con esto el componente se 'renderizará' si hay cambios en él
+const memoizedNote = memo(Note);
+
+export default memoizedNote;
